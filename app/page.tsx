@@ -51,7 +51,7 @@ export default function Home() {
 
       {birthdayName && (
         <div className="falling-confetti" key={`rain-${celebrationId}`} aria-hidden="true">
-          {Array.from({ length: 104 }, (_, index) => (
+          {Array.from({ length: 208 }, (_, index) => (
             <span
               className="falling-piece"
               key={index}
