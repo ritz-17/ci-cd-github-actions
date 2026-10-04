@@ -27,12 +27,7 @@ export default function Home() {
   const [celebrationId, setCelebrationId] = useState(0);
 
   function updateName(value: string) {
-    const trimmedName = value.trim();
     setName(value);
-    setBirthdayName(trimmedName);
-    if (!birthdayName && trimmedName) {
-      setCelebrationId((currentId) => currentId + 1);
-    }
   }
 
   function celebrate(event: FormEvent<HTMLFormElement>) {
