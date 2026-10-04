@@ -1,69 +1,152 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import type { CSSProperties, FormEvent } from "react";
+
+const wishes = [
+  {
+    language: "ENGLISH",
+    message:
+      "May your year be filled with laughter, love, and little moments that feel like magic.",
+  },
+  {
+    language: "हिन्दी",
+    message: "तुम्हारा हर दिन खुशियों, प्रेम और खूबसूरत पलों से भरा रहे।",
+  },
+  {
+    language: "संस्कृतम्",
+    message: "तव जीवनं सुखेन, प्रेम्णा, आनन्देन च परिपूर्णं भवतु।",
+  },
+];
+
+const confettiColors = ["#ff4d4f", "#ff922b", "#ffd43b", "#51cf66", "#339af0", "#5c7cfa", "#845ef7"];
 
 export default function Home() {
+  const [name, setName] = useState("");
+  const [birthdayName, setBirthdayName] = useState("");
+  const [celebrationId, setCelebrationId] = useState(0);
+
+  function updateName(value: string) {
+    const trimmedName = value.trim();
+    setName(value);
+    setBirthdayName(trimmedName);
+    if (!birthdayName && trimmedName) {
+      setCelebrationId((currentId) => currentId + 1);
+    }
+  }
+
+  function celebrate(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmedName = name.trim();
+    if (trimmedName) {
+      setBirthdayName(trimmedName);
+      setCelebrationId((currentId) => currentId + 1);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+    <main className="birthday-page">
+      <header className="topbar">
+        <a className="wordmark" href="#home" aria-label="A Little Wish home">
+          <span className="wordmark-star" aria-hidden="true">✳</span>
+          a little wish
+        </a>
+        <span className="topbar-note">MADE FOR YOUR FAVOURITE PERSON</span>
+      </header>
+
+      {birthdayName && (
+        <div className="falling-confetti" key={`rain-${celebrationId}`} aria-hidden="true">
+          {Array.from({ length: 104 }, (_, index) => (
+            <span
+              className="falling-piece"
+              key={index}
+              style={{
+                "--fall-left": `${(index * 37 + 9) % 100}%`,
+                "--fall-delay": `${(index % 7) * 0.055}s`,
+                "--fall-duration": `${1.35 + (index % 5) * 0.1}s`,
+                "--fall-drift": `${((index % 5) - 2) * 18}px`,
+                "--fall-rotation": `${index % 2 === 0 ? 540 : -540}deg`,
+                "--fall-color": confettiColors[index % confettiColors.length],
+              } as CSSProperties}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
-      </main>
-    </div>
+      )}
+
+      <section className="birthday-layout" id="home">
+        <div className="intro-panel">
+          <p className="eyebrow"><span /> THE DAY IS THEIRS</p>
+          <h1>Make their<br /><em>day.</em></h1>
+          <p className="intro-copy">
+            A little name, a lot of love. Make someone feel wonderfully celebrated today.
+          </p>
+
+          <form className="name-form" onSubmit={celebrate}>
+            <label htmlFor="birthday-name">WHO ARE WE CELEBRATING?</label>
+            <div className="input-row">
+              <input
+                autoComplete="off"
+                id="birthday-name"
+                maxLength={40}
+                onChange={(event) => updateName(event.target.value)}
+                placeholder="Their name goes here"
+                required
+                value={name}
+              />
+              <button type="submit">Make a wish <span aria-hidden="true">↗</span></button>
+            </div>
+          </form>
+          <p className="tiny-note">A small surprise, just for them <span aria-hidden="true">♥</span></p>
+        </div>
+
+        <article className="wish-card" aria-live="polite">
+          <div className="photo-panel" role="img" aria-label="A birthday cake topped with candles">
+            <span className="photo-tag">A DAY TO REMEMBER</span>
+            <span className="photo-sparkle sparkle-one" aria-hidden="true">✳</span>
+            <span className="photo-sparkle sparkle-two" aria-hidden="true">✦</span>
+          </div>
+          <div className="wish-content">
+            <p className="card-kicker">{birthdayName ? "TODAY IS ALL YOURS" : "A NOTE FOR SOMEONE SPECIAL"}</p>
+            <div className="name-stage">
+              {birthdayName && (
+                <div className="celebration-burst" key={`burst-${celebrationId}`} aria-hidden="true">
+                  <span className="confetti confetti-one">✦</span>
+                  <span className="confetti confetti-two">✳</span>
+                  <span className="confetti confetti-three">♥</span>
+                  <span className="confetti confetti-four">✦</span>
+                  <span className="confetti confetti-five">✳</span>
+                  <span className="confetti confetti-six">♥</span>
+                  <span className="confetti confetti-seven">✦</span>
+                  <span className="confetti confetti-eight">✳</span>
+                  <span className="flare-core" />
+                </div>
+              )}
+              <h2 className={birthdayName ? "birthday-name is-visible" : "birthday-name"} key={`name-${celebrationId}`}>
+                {birthdayName || "Your person"}
+                <span aria-hidden="true">{birthdayName ? "!" : "."}</span>
+              </h2>
+            </div>
+            {birthdayName ? (
+              <div className="wish-list">
+                {wishes.map((wish) => (
+                  <section className="wish-line" key={wish.language}>
+                    <h3>{wish.language}</h3>
+                    <p>{wish.message}</p>
+                  </section>
+                ))}
+              </div>
+            ) : (
+              <p className="empty-message">Their birthday wish will bloom right here.</p>
+            )}
+            <div className="card-footer"><span>WITH LOVE, ALWAYS</span><span aria-hidden="true">✳</span></div>
+          </div>
+        </article>
+      </section>
+
+      <footer className="page-footer">
+        <span>GOOD THINGS ARE WORTH CELEBRATING</span>
+        <span>01 <i /> 01</span>
+      </footer>
+    </main>
   );
 }
